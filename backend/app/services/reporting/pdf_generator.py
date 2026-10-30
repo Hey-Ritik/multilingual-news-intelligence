@@ -235,6 +235,19 @@ def generate_pdf_report(report: FullAnalysisReport) -> bytes:
 
     # 4. Bias and Framing Findings Table
     elements.append(Paragraph("4. Explainable Bias and Framing Evidence", style_h1))
+    
+    verdict_text = clean_xml_text(report.framing.verdict.value if hasattr(report.framing, "verdict") else "COMPLETED")
+    conf_pct = int(report.framing.verdict_confidence * 100) if hasattr(report.framing, "verdict_confidence") else 80
+    verdict_color = "#dc2626" if "POTENTIAL" in verdict_text else ("#16a34a" if "NO CLEAR" in verdict_text else "#64748b")
+    
+    elements.append(Paragraph(
+        f"<b>Overall Verdict:</b> <font color='{verdict_color}'><b>{verdict_text}</b></font> "
+        f"| <b>Confidence:</b> {conf_pct}% (uncalibrated) | <b>Findings:</b> {len(report.framing.findings)}",
+        style_body
+    ))
+    if hasattr(report.framing, "verdict_summary") and report.framing.verdict_summary:
+        elements.append(Paragraph(f"<i>{clean_xml_text(report.framing.verdict_summary)}</i>", style_body))
+    elements.append(Spacer(1, 4))
     elements.append(Paragraph(
         "Every indicator below is grounded in exact original text spans with documented character offsets. "
         "These textual observations illustrate rhetorical choices and potential reader effects.",

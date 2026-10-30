@@ -93,6 +93,22 @@ export interface SummaryResult {
   limitations: string;
 }
 
+export type BiasVerdict =
+  | 'POTENTIAL BIAS DETECTED'
+  | 'NO CLEAR BIAS DETECTED'
+  | 'INSUFFICIENT EVIDENCE';
+
+export type AttributionType =
+  | 'JOURNALIST_NARRATION'
+  | 'QUOTED_SPEAKER'
+  | 'IDENTIFIED_SOURCE';
+
+export type PortrayalDirection =
+  | 'POSITIVE'
+  | 'NEGATIVE'
+  | 'MIXED'
+  | 'NEUTRAL_DESCRIPTIVE';
+
 export type FramingCategory =
   | 'LOADED_LANGUAGE'
   | 'ACTOR_PORTRAYAL'
@@ -102,7 +118,13 @@ export type FramingCategory =
   | 'HEDGING_QUALIFYING'
   | 'EMPHASIS_PROMINENCE'
   | 'VIEWPOINT_REPRESENTATION'
-  | 'SELECTIVE_PRESENTATION';
+  | 'SELECTIVE_PRESENTATION'
+  | 'SENSATIONALISM_EXAGGERATION'
+  | 'GOVERNMENT_CRITICAL'
+  | 'THREAT_FRAMING'
+  | 'IN_GROUP_OUT_GROUP'
+  | 'SYMPATHY_APPEAL'
+  | 'FEAR_APPEAL';
 
 export interface FramingEvidence {
   finding_id: string;
@@ -111,21 +133,72 @@ export interface FramingEvidence {
   exact_text: string;
   start_offset: number;
   end_offset: number;
+  sentence_index?: number;
+  paragraph_index?: number;
+  sentence_text?: string;
   explanation: string;
   potential_effect: string;
   evidence_strength: 'low' | 'medium' | 'high';
   alternative_interpretation?: string;
   method: string;
   actor_or_speaker?: string;
+  target_entity?: string;
+  direction?: PortrayalDirection;
+  affected_group?: string;
+  attribution?: AttributionType;
+  attribution_details?: string;
+  psychological_mechanism?: string;
+  confidence_score?: number;
+  confidence_label?: string;
+  confidence_factors?: string[];
+}
+
+export interface EntityPortrayalImpact {
+  entity_name: string;
+  entity_type: string;
+  direction: PortrayalDirection;
+  findings_count: number;
+  evidence_quotes: string[];
+  portrayal_summary: string;
+  favored_interest_analysis: string;
+}
+
+export interface PsychologicalMechanism {
+  framework_name: string;
+  concept_description: string;
+  relevance_to_text: string;
+  evidence_text: string;
+  analytical_caveat: string;
+}
+
+export interface NeutralityCheck {
+  check_name: string;
+  status: 'NO_BIAS_INDICATORS_FOUND' | 'INDICATORS_PRESENT' | 'NOT_ASSESSABLE';
+  description: string;
+  result_details: string;
 }
 
 export interface FramingAnalysisResult {
+  verdict?: BiasVerdict;
+  verdict_summary?: string;
+  verdict_confidence?: number;
+  verdict_confidence_label?: string;
+  verdict_confidence_reasoning?: string;
   findings: FramingEvidence[];
   category_counts: Record<string, number>;
   density_per_1000_tokens: number;
   article_level_assessment: string;
   unsupported_conclusions_note: string;
   methodology: string;
+  entity_impacts?: EntityPortrayalImpact[];
+  psychological_framings?: PsychologicalMechanism[];
+  neutrality_checks?: NeutralityCheck[];
+  what_was_examined?: string[];
+  why_verdict_reached?: string;
+  framing_symmetry_assessment?: string;
+  overall_direction?: string;
+  evidence_coverage_percentage?: number;
+  system_limitations?: string[];
 }
 
 export interface EventProfile {
