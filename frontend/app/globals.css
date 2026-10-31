@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-burnt-orange: #E85D26;
+  --color-deep-orange: #C7471D;
+  --color-warm-orange: #F4A261;
+  --color-almost-black: #171717;
+  --color-pure-white: #FFFFFF;
+  --color-warm-off-white: #F7F5F0;
+  --color-light-grey: #E5E3DE;
+  --color-editorial-muted: #6E6B65;
+
+  --foreground-rgb: 23, 23, 23;
+  --background-rgb: 247, 245, 240;
+}
+
+@layer base {
+  * {
+    border-color: #E5E3DE;
+  }
+
+  body {
+    color: #171717;
+    background-color: #F7F5F0;
+    font-family: 'Space Grotesk', 'Geist Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: #E85D26;
+    color: #FFFFFF;
+  }
+
+  /* Accessible focus styling adhering to Swiss precision */
+  :focus-visible {
+    outline: 2px solid #E85D26;
+    outline-offset: 2px;
+  }
+
+  /* Custom minimal editorial scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F7F5F0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #D8D5CE;
+    border-radius: 0px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #E85D26;
+  }
+}
+
+@layer utilities {
+  /* Swiss International Typographic Utilities */
+  .editorial-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+
+  .editorial-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6875rem; /* 11px */
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .editorial-mono {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em;
+    font-feature-settings: "tnum";
+  }
+
+  .editorial-border {
+    border-color: #E5E3DE;
+  }
+
+  .editorial-border-dark {
+    border-color: #2A2A2A;
+  }
+}
