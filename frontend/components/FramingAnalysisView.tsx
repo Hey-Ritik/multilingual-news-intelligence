@@ -6,6 +6,7 @@ import {
   FramingEvidence,
   BiasVerdict,
 } from '../types';
+import FramingAnalysisChart from './charts/FramingAnalysisChart';
 import {
   Info,
   ChevronRight,
@@ -221,6 +222,11 @@ export default function FramingAnalysisView({
             <div className="font-mono text-[9px] text-editorialMuted">editorial stance</div>
           </div>
         </div>
+      </div>
+
+      {/* Visual Framing Signals & Category Frequency Chart */}
+      <div className="bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm">
+        <FramingAnalysisChart framing={framing} />
       </div>
 
       {/* =========================================================================

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, ArrowDown, Globe } from 'lucide-react';
 import { Button } from '../ui/Button';
 import gsap from 'gsap';
@@ -21,15 +22,20 @@ export default function HeroSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Intro timeline for headline and ribbon
+      // Intro timeline for headline, rails, ribbon, and imagery
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.from('.hero-anim-text', {
-        y: 60,
+      tl.from('.hero-left-rail', {
+        x: -20,
         opacity: 0,
-        stagger: 0.12,
-        duration: 1,
-      })
+        duration: 0.8,
+      }, 0.1)
+        .from('.hero-anim-text', {
+          y: 40,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.9,
+        }, 0.15)
         .from(
           '.hero-ribbon',
           {
@@ -43,7 +49,7 @@ export default function HeroSection() {
         .from(
           '.hero-globe',
           {
-            scale: 0.9,
+            scale: 0.92,
             opacity: 0,
             duration: 1,
           },
@@ -52,9 +58,28 @@ export default function HeroSection() {
         .from(
           '.hero-sub-card',
           {
-            y: 30,
+            y: 25,
             opacity: 0,
             stagger: 0.1,
+            duration: 0.8,
+          },
+          '-=0.6'
+        )
+        .from(
+          '.hero-vignette-img',
+          {
+            scale: 1.15,
+            duration: 1.2,
+            ease: 'power2.out',
+            stagger: 0.1,
+          },
+          '-=0.7'
+        )
+        .from(
+          '.hero-right-rail',
+          {
+            y: 20,
+            opacity: 0,
             duration: 0.8,
           },
           '-=0.6'
@@ -62,7 +87,7 @@ export default function HeroSection() {
 
       // Scroll-driven parallax for the orange ribbon and globe
       gsap.to('.hero-ribbon', {
-        y: 80,
+        y: 70,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
@@ -72,13 +97,23 @@ export default function HeroSection() {
       });
 
       gsap.to('.hero-globe', {
-        y: -40,
-        rotate: 10,
+        y: -35,
+        rotate: 8,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
           end: 'bottom top',
           scrub: 1.5,
+        },
+      });
+
+      gsap.to('.hero-bg-grid', {
+        y: 35,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 2,
         },
       });
     }, heroRef);
@@ -89,7 +124,12 @@ export default function HeroSection() {
   const scrollToNextSection = () => {
     const el = document.getElementById('section-global-perspective');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      const lenis = (window as unknown as { __lenis?: { scrollTo: (target: HTMLElement, options?: object) => void } }).__lenis;
+      if (lenis) {
+        lenis.scrollTo(el, { offset: -80, duration: 1.2 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -99,7 +139,7 @@ export default function HeroSection() {
       className="relative w-full bg-warmOffWhite border-b border-lightGrey overflow-hidden min-h-[92vh] flex flex-col justify-between"
     >
       {/* Background Architectural Grid Lines */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="hero-bg-grid absolute inset-0 pointer-events-none">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 border-x border-lightGrey/60 grid grid-cols-12">
           <div className="col-span-1 border-r border-lightGrey/40 h-full hidden lg:block" />
           <div className="col-span-7 h-full" />
@@ -112,7 +152,7 @@ export default function HeroSection() {
         {/* Main Hero Architectural Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
           {/* Left Vertical Language Rail (Reference Style) */}
-          <div className="hidden lg:flex lg:col-span-1 flex-col items-start gap-4 pt-4 border-r border-lightGrey/60 pr-4">
+          <div className="hero-left-rail hidden lg:flex lg:col-span-1 flex-col items-start gap-4 pt-4 border-r border-lightGrey/60 pr-4">
             <span className="text-burntOrange font-mono text-sm font-bold">→</span>
             <div className="flex flex-col gap-2 font-mono text-xs uppercase font-semibold text-editorialMuted">
               <span className="text-burntOrange font-bold bg-burntOrange/10 px-1.5 py-0.5 border border-burntOrange">
@@ -207,13 +247,22 @@ export default function HeroSection() {
             </div>
 
             {/* High-Contrast Grayscale Globe with Coordinate Grids */}
-            <div className="hero-globe relative w-64 h-64 sm:w-80 sm:h-80 rounded-full border border-almostBlack/20 bg-pureWhite shadow-editorial-md overflow-hidden flex items-center justify-center z-0">
+            <div className="hero-globe relative w-64 h-64 sm:w-80 sm:h-80 rounded-full border border-almostBlack/20 bg-almostBlack shadow-editorial-md overflow-hidden flex items-center justify-center z-0">
+              <Image
+                src="/images/hero-globe.jpg"
+                alt="High-contrast satellite view of Earth in deep space"
+                fill
+                priority
+                sizes="(max-width: 640px) 256px, 320px"
+                className="object-cover grayscale contrast-125 brightness-95"
+              />
+
               {/* Halftone / Line Grids */}
               <div
-                className="absolute inset-0 opacity-15"
+                className="absolute inset-0 opacity-20 pointer-events-none"
                 style={{
                   backgroundImage:
-                    'radial-gradient(#171717 1px, transparent 1px), linear-gradient(to right, #171717 1px, transparent 1px)',
+                    'radial-gradient(#ffffff 1px, transparent 1px), linear-gradient(to right, #ffffff 1px, transparent 1px)',
                   backgroundSize: '16px 16px, 32px 32px',
                 }}
               />
@@ -221,11 +270,11 @@ export default function HeroSection() {
               {/* Vector Globe Wireframe Projection */}
               <svg
                 viewBox="0 0 200 200"
-                className="w-full h-full stroke-almostBlack/40 fill-none"
+                className="absolute inset-0 w-full h-full stroke-pureWhite/30 fill-none pointer-events-none"
                 strokeWidth="0.75"
               >
                 {/* Outer Sphere */}
-                <circle cx="100" cy="100" r="96" strokeWidth="1" stroke="#171717" />
+                <circle cx="100" cy="100" r="96" strokeWidth="1" stroke="rgba(255,255,255,0.4)" />
                 {/* Latitudinal Ellipses */}
                 <ellipse cx="100" cy="100" rx="96" ry="32" />
                 <ellipse cx="100" cy="100" rx="96" ry="64" />
@@ -235,27 +284,26 @@ export default function HeroSection() {
                 <ellipse cx="100" cy="100" rx="64" ry="96" />
                 <ellipse cx="100" cy="100" rx="86" ry="96" />
                 <line x1="4" y1="100" x2="196" y2="100" strokeWidth="1.2" stroke="#E85D26" />
-                <line x1="100" y1="4" x2="100" y2="196" strokeWidth="1" />
+                <line x1="100" y1="4" x2="100" y2="196" strokeWidth="1" stroke="rgba(255,255,255,0.5)" />
               </svg>
 
-              {/* Realistic Grayscale Topographic Globe Overlay */}
+              {/* Subtle Vignette & Gradient */}
               <div
-                className="absolute inset-0 mix-blend-multiply opacity-75 grayscale contrast-125"
+                className="absolute inset-0 pointer-events-none"
                 style={{
-                  backgroundImage:
-                    'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), rgba(20,20,20,0.95))',
+                  background: 'radial-gradient(circle at 60% 50%, transparent 55%, rgba(0,0,0,0.65) 100%)',
                 }}
               />
 
               {/* Precision Target Coordinates */}
-              <div className="absolute font-mono text-[9px] text-almostBlack font-bold bottom-4 left-6 bg-pureWhite/90 px-1 border border-lightGrey">
+              <div className="absolute font-mono text-[9px] text-pureWhite font-bold bottom-4 left-6 bg-almostBlack/85 px-2 py-0.5 border border-pureWhite/20 backdrop-blur-xs">
                 LAT 28.61° N / LON 77.20° E
               </div>
             </div>
           </div>
 
           {/* Right Gutter Annotation Strip (Reference Style) */}
-          <div className="hidden lg:flex lg:col-span-1 flex-col justify-between items-end h-full pt-4">
+          <div className="hero-right-rail hidden lg:flex lg:col-span-1 flex-col justify-between items-end h-full pt-4">
             <div className="space-y-1 font-mono text-[9px] text-right text-editorialMuted tracking-widest uppercase leading-snug">
               <div>GLOBAL</div>
               <div>NEWS</div>
@@ -278,52 +326,66 @@ export default function HeroSection() {
           className="mt-12 pt-6 border-t border-lightGrey grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6"
         >
           {/* Vignette 1: Same Event */}
-          <div className="hero-sub-card flex items-center gap-3 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
-            <div className="w-16 h-12 bg-almostBlack/90 overflow-hidden relative border border-lightGrey shrink-0">
-              {/* Grayscale Press / Assembly Visual */}
-              <div className="w-full h-full bg-gradient-to-tr from-almostBlack via-editorialMuted to-pureWhite/80 opacity-80 mix-blend-luminosity flex items-center justify-center font-mono text-[8px] text-pureWhite">
-                EVENT
-              </div>
+          <div className="hero-sub-card flex items-center gap-3.5 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
+            <div className="w-20 h-14 bg-almostBlack overflow-hidden relative border border-lightGrey shrink-0">
+              <Image
+                src="/images/hero-crowd.jpg"
+                alt="Global news event and street scene"
+                fill
+                sizes="80px"
+                className="hero-vignette-img object-cover grayscale contrast-115 group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-almostBlack/10 mix-blend-multiply" />
             </div>
             <div>
               <div className="font-mono text-[10px] font-bold text-burntOrange uppercase tracking-wider">
                 SAME EVENT.
               </div>
-              <div className="text-xs text-editorialMuted leading-tight mt-0.5">
+              <div className="text-xs text-editorialMuted leading-tight mt-0.5 font-normal">
                 Single global development occurring in real time.
               </div>
             </div>
           </div>
 
           {/* Vignette 2: Different Perspectives */}
-          <div className="hero-sub-card flex items-center gap-3 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
-            <div className="w-16 h-12 bg-almostBlack/90 overflow-hidden relative border border-lightGrey shrink-0">
-              <div className="w-full h-full bg-gradient-to-tr from-almostBlack via-editorialMuted to-pureWhite/80 opacity-80 mix-blend-luminosity flex items-center justify-center font-mono text-[8px] text-pureWhite">
-                MEDIA
-              </div>
+          <div className="hero-sub-card flex items-center gap-3.5 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
+            <div className="w-20 h-14 bg-almostBlack overflow-hidden relative border border-lightGrey shrink-0">
+              <Image
+                src="/images/hero-modern-architecture.jpg"
+                alt="Modern civic architecture pavilion"
+                fill
+                sizes="80px"
+                className="hero-vignette-img object-cover grayscale contrast-115 group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-almostBlack/10 mix-blend-multiply" />
             </div>
             <div>
               <div className="font-mono text-[10px] font-bold text-almostBlack uppercase tracking-wider">
                 DIFFERENT PERSPECTIVES.
               </div>
-              <div className="text-xs text-editorialMuted leading-tight mt-0.5">
+              <div className="text-xs text-editorialMuted leading-tight mt-0.5 font-normal">
                 Framing variations across diverse cultural media.
               </div>
             </div>
           </div>
 
           {/* Vignette 3: A Broader Understanding */}
-          <div className="hero-sub-card flex items-center gap-3 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
-            <div className="w-16 h-12 bg-almostBlack/90 overflow-hidden relative border border-lightGrey shrink-0">
-              <div className="w-full h-full bg-gradient-to-tr from-burntOrange via-deepOrange to-almostBlack opacity-90 flex items-center justify-center font-mono text-[8px] text-pureWhite">
-                TRUTH
-              </div>
+          <div className="hero-sub-card flex items-center gap-3.5 p-3 bg-pureWhite border border-lightGrey shadow-editorial-sm group hover:border-almostBlack transition-all">
+            <div className="w-20 h-14 bg-almostBlack overflow-hidden relative border border-lightGrey shrink-0">
+              <Image
+                src="/images/hero-classic-building.jpg"
+                alt="Classical European monument and square"
+                fill
+                sizes="80px"
+                className="hero-vignette-img object-cover grayscale contrast-115 group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-almostBlack/10 mix-blend-multiply" />
             </div>
             <div>
               <div className="font-mono text-[10px] font-bold text-almostBlack uppercase tracking-wider">
                 A BROADER UNDERSTANDING.
               </div>
-              <div className="text-xs text-editorialMuted leading-tight mt-0.5">
+              <div className="text-xs text-editorialMuted leading-tight mt-0.5 font-normal">
                 Explainable verification without linguistic bias.
               </div>
             </div>

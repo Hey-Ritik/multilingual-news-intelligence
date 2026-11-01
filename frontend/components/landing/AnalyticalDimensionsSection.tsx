@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Smile, Sparkles, Scale, ShieldAlert, ArrowRight } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -18,11 +19,38 @@ export default function AnalyticalDimensionsSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      // Header and Section 04 reveal
+      gsap.from('.dim-header-anim', {
+        y: 25,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.85,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Orange hairline accent expansion
+      gsap.from('.dim-accent-line', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
       // Dimension cards staggered reveal
       gsap.from('.dim-card', {
-        y: 50,
+        y: 40,
         opacity: 0,
-        stagger: 0.12,
+        stagger: 0.1,
         duration: 0.9,
         ease: 'power3.out',
         scrollTrigger: {
@@ -32,10 +60,46 @@ export default function AnalyticalDimensionsSection() {
         },
       });
 
-      // Topographic visual subtle scale and parallax
+      // Dimension numerals subtle scale reveal
+      gsap.from('.dim-num-anim', {
+        scale: 0.8,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: cardsRef.current,
+          start: 'top 78%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Topographic visual container reveal
+      gsap.from('.topo-container', {
+        scale: 0.92,
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: visualRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Orbital dashed ring continuous slow rotation
+      gsap.to('.topo-orbital-ring', {
+        rotation: 360,
+        repeat: -1,
+        ease: 'none',
+        duration: 45,
+        transformOrigin: 'center center',
+      });
+
+      // Topographic image subtle parallax depth
       gsap.to('.topo-visual', {
-        scale: 1.08,
-        rotate: 4,
+        scale: 1.12,
+        y: -15,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top bottom',
@@ -92,14 +156,14 @@ export default function AnalyticalDimensionsSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         {/* Section Header with Left Rail */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
-          <div className="hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
+          <div className="dim-header-anim hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
             <span className="font-mono text-sm font-bold text-burntOrange">04</span>
-            <span className="w-6 h-px bg-editorialDark-border" />
+            <span className="dim-accent-line w-6 h-px bg-editorialDark-border origin-left" />
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-2">
-            <span className="editorial-eyebrow text-burntOrange">ANALYTICAL DIMENSIONS</span>
-            <h2 className="font-editorial font-black text-3xl sm:text-5xl uppercase tracking-tight text-pureWhite">
+            <span className="dim-header-anim editorial-eyebrow text-burntOrange">ANALYTICAL DIMENSIONS</span>
+            <h2 className="dim-header-anim font-editorial font-black text-3xl sm:text-5xl uppercase tracking-tight text-pureWhite">
               Four Core Axes of Linguistic Evaluation
             </h2>
           </div>
@@ -120,7 +184,7 @@ export default function AnalyticalDimensionsSection() {
                 {/* Header: Giant Burnt Orange Numeral & Icon */}
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="font-editorial font-black text-4xl text-burntOrange leading-none select-none">
+                    <span className="dim-num-anim font-editorial font-black text-4xl text-burntOrange leading-none select-none inline-block">
                       {dim.num}
                     </span>
                     <div className="p-2 border border-editorialDark-border text-editorialDark-muted group-hover:text-burntOrange group-hover:border-burntOrange transition-colors">
@@ -156,18 +220,22 @@ export default function AnalyticalDimensionsSection() {
             ref={visualRef}
             className="lg:col-span-4 relative flex flex-col items-center lg:items-end justify-center"
           >
-            <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full border border-editorialDark-border overflow-hidden bg-editorialDark-surface shadow-editorial-md flex items-center justify-center">
-              {/* Moon / Crater / Earth Surface Halftone Simulation */}
+            <div className="topo-container relative w-64 h-64 sm:w-72 sm:h-72 rounded-full border border-editorialDark-border overflow-hidden bg-editorialDark-surface shadow-editorial-md flex items-center justify-center">
+              <Image
+                src="/images/analytical-relief.jpg"
+                alt="Orbital reconnaissance topographic planetary relief"
+                fill
+                sizes="(max-width: 640px) 256px, 288px"
+                className="topo-visual object-cover grayscale contrast-125 brightness-90"
+              />
+
+              {/* Halftone & Gradient Overlay */}
               <div
-                className="topo-visual absolute inset-0 opacity-40 mix-blend-screen"
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle at 40% 40%, rgba(255,255,255,0.7), transparent 70%), radial-gradient(circle at 70% 60%, rgba(232,93,38,0.5), transparent 60%)',
-                }}
+                className="absolute inset-0 opacity-40 mix-blend-multiply bg-gradient-to-t from-almostBlack via-almostBlack/40 to-transparent pointer-events-none"
               />
 
               {/* Orbital curved ray in Burnt Orange */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
+              <svg className="topo-orbital-ring absolute inset-0 w-full h-full pointer-events-none">
                 <circle
                   cx="144"
                   cy="144"
@@ -176,15 +244,15 @@ export default function AnalyticalDimensionsSection() {
                   stroke="#E85D26"
                   strokeWidth="1.5"
                   strokeDasharray="6 8"
-                  opacity="0.8"
+                  opacity="0.85"
                 />
                 <circle cx="210" cy="65" r="4" fill="#E85D26" />
               </svg>
 
               {/* Stacked Minimal Text */}
-              <div className="relative z-10 text-center font-mono text-xs tracking-widest uppercase font-bold text-pureWhite max-w-[150px] leading-relaxed">
+              <div className="relative z-10 text-center font-mono text-xs tracking-widest uppercase font-bold text-pureWhite max-w-[150px] leading-relaxed drop-shadow-md bg-almostBlack/60 backdrop-blur-xs py-2 px-3 border border-pureWhite/10">
                 <div>DEEPER</div>
-                <div className="text-burntOrange">ANALYSIS.</div>
+                <div className="text-burntOrange font-black">ANALYSIS.</div>
                 <div>CLEARER</div>
                 <div>PERSPECTIVES.</div>
               </div>

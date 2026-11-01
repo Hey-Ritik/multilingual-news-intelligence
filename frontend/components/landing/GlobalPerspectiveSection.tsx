@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Globe2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/Button';
 import gsap from 'gsap';
@@ -21,10 +22,11 @@ export default function GlobalPerspectiveSection() {
     const ctx = gsap.context(() => {
       // Heading reveal on scroll
       gsap.from('.perspective-heading', {
-        y: 40,
+        y: 35,
         opacity: 0,
-        stagger: 0.15,
-        duration: 1,
+        stagger: 0.12,
+        duration: 0.9,
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top 75%',
@@ -32,13 +34,53 @@ export default function GlobalPerspectiveSection() {
         },
       });
 
-      // Cards staggered reveal with slight tilt and translation
+      // Section metadata and accent reveals
+      gsap.from('.perspective-meta-reveal', {
+        y: 20,
+        opacity: 0,
+        stagger: 0.08,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 78%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Orange hairline accent expansion
+      gsap.from('.perspective-accent-line', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 78%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Cards staggered reveal with slight translation
       gsap.from('.perspective-card', {
-        y: 60,
+        y: 45,
         opacity: 0,
         stagger: 0.12,
-        duration: 1,
+        duration: 0.9,
         ease: 'power3.out',
+        scrollTrigger: {
+          trigger: cardsContainerRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Editorial image unmask/scale reveal inside each news card
+      gsap.from('.perspective-card-img', {
+        scale: 1.15,
+        duration: 1.2,
+        ease: 'power2.out',
+        stagger: 0.12,
         scrollTrigger: {
           trigger: cardsContainerRef.current,
           start: 'top 80%',
@@ -48,7 +90,7 @@ export default function GlobalPerspectiveSection() {
 
       // Subtle parallax between cards while scrolling
       gsap.to('.perspective-card-even', {
-        y: -24,
+        y: -20,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top bottom',
@@ -58,12 +100,23 @@ export default function GlobalPerspectiveSection() {
       });
 
       gsap.to('.perspective-card-odd', {
-        y: 20,
+        y: 18,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top bottom',
           end: 'bottom top',
           scrub: 1.6,
+        },
+      });
+
+      // Subtle parallax on the background network connecting web
+      gsap.to('.perspective-network-web', {
+        y: 30,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 2,
         },
       });
     }, sectionRef);
@@ -79,8 +132,8 @@ export default function GlobalPerspectiveSection() {
       title: 'Climate talks resume as nations push for greener policies',
       category: 'GLOBAL ENVIRONMENT',
       location: 'Geneva / London',
-      imageAlt: 'Mountain landscape',
-      gradient: 'from-zinc-900 via-zinc-800 to-zinc-700',
+      imageAlt: 'Swiss alpine mountain ridge in monochrome',
+      imageSrc: '/images/news-mountains.jpg',
     },
     {
       id: 'hi',
@@ -89,8 +142,8 @@ export default function GlobalPerspectiveSection() {
       title: 'जलवायु समझौते पर देशों के बीच फिर से चर्चा शुरू',
       category: 'पर्यावरण एवं नीति',
       location: 'नई दिल्ली',
-      imageAlt: 'Monument archway',
-      gradient: 'from-stone-900 via-stone-800 to-zinc-700',
+      imageAlt: 'India Gate architectural memorial arch in New Delhi',
+      imageSrc: '/images/news-india-gate.jpg',
     },
     {
       id: 'bn',
@@ -99,8 +152,8 @@ export default function GlobalPerspectiveSection() {
       title: 'জলবায়ু বৈঠকে নতুন করে আলোচনা ও ঐকমত্যের আহ্বান',
       category: 'আন্তর্জাতিক সংবাদ',
       location: 'কলকাতা / ঢাকা',
-      imageAlt: 'Bridge infrastructure',
-      gradient: 'from-neutral-900 via-neutral-800 to-zinc-700',
+      imageAlt: 'Howrah Bridge cantilever steel truss on Hooghly river',
+      imageSrc: '/images/news-howrah-bridge.jpg',
     },
     {
       id: 'ta',
@@ -109,8 +162,8 @@ export default function GlobalPerspectiveSection() {
       title: 'காலநிலை ஒப்பந்தம் குறித்த நாடுகளிடையே மறுபேச்சுவார்த்தை',
       category: 'சுற்றுச்சூழல்',
       location: 'சென்னை',
-      imageAlt: 'Coastal heritage temple',
-      gradient: 'from-zinc-950 via-zinc-900 to-zinc-800',
+      imageAlt: 'Shore Temple 8th-century Dravidian granite monument',
+      imageSrc: '/images/news-shore-temple.jpg',
     },
   ];
 
@@ -130,7 +183,7 @@ export default function GlobalPerspectiveSection() {
       </div>
 
       {/* SVG Connecting Network Web (Orange Dashed Lines & Glowing Dots) */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
+      <div className="perspective-network-web absolute inset-0 pointer-events-none opacity-40">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
@@ -171,15 +224,15 @@ export default function GlobalPerspectiveSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
           {/* Left Number Rail */}
           <div className="hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-2">
-            <span className="font-mono text-sm font-bold text-burntOrange">02</span>
-            <span className="w-6 h-px bg-editorialDark-border" />
+            <span className="perspective-meta-reveal font-mono text-sm font-bold text-burntOrange">02</span>
+            <span className="perspective-accent-line w-6 h-px bg-editorialDark-border origin-left" />
           </div>
 
           {/* Main Title & Action */}
           <div className="lg:col-span-8 flex flex-col gap-4">
-            <div className="flex items-center gap-2">
+            <div className="perspective-meta-reveal flex items-center gap-2">
               <span className="editorial-eyebrow text-burntOrange">GLOBAL PERSPECTIVE</span>
-              <span className="w-8 h-px bg-burntOrange/50" />
+              <span className="perspective-accent-line w-8 h-px bg-burntOrange/50 origin-left" />
             </div>
 
             <div ref={headlineRef} className="space-y-1">
@@ -191,12 +244,12 @@ export default function GlobalPerspectiveSection() {
               </h2>
             </div>
 
-            <p className="text-sm sm:text-base text-editorialDark-muted max-w-xl font-normal leading-relaxed mt-2">
+            <p className="perspective-meta-reveal text-sm sm:text-base text-editorialDark-muted max-w-xl font-normal leading-relaxed mt-2">
               The same events, different languages, different perspectives. A more complete truth
               unlocked through deterministic natural language understanding.
             </p>
 
-            <div className="pt-2">
+            <div className="perspective-meta-reveal pt-2">
               <Button
                 href="/workspace"
                 variant="outline"
@@ -210,7 +263,7 @@ export default function GlobalPerspectiveSection() {
           </div>
 
           {/* Right Rail Annotation */}
-          <div className="hidden lg:flex lg:col-span-3 flex-col justify-start items-end pt-2">
+          <div className="perspective-meta-reveal hidden lg:flex lg:col-span-3 flex-col justify-start items-end pt-2">
             <div className="space-y-1 font-mono text-[9px] text-right text-editorialDark-muted tracking-widest uppercase leading-snug">
               <div>SAME</div>
               <div>EVENT</div>
@@ -255,17 +308,28 @@ export default function GlobalPerspectiveSection() {
               </div>
 
               {/* Monochromatic Editorial Photo Representation */}
-              <div className="mt-2 w-full h-32 bg-almostBlack overflow-hidden relative border border-lightGrey">
-                <div
-                  className={`w-full h-full bg-gradient-to-br ${card.gradient} opacity-90 flex flex-col justify-between p-2.5`}
-                >
-                  <div className="flex justify-between items-start font-mono text-[8px] text-pureWhite/70 uppercase">
-                    <span>{card.location}</span>
-                    <span className="text-burntOrange font-bold">LIVE WIRE</span>
+              <div className="mt-2 w-full h-36 bg-almostBlack overflow-hidden relative border border-lightGrey group/img">
+                <Image
+                  src={card.imageSrc}
+                  alt={card.imageAlt}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="perspective-card-img object-cover grayscale contrast-125 transition-transform duration-500 group-hover/img:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-almostBlack/85 via-almostBlack/20 to-transparent pointer-events-none" />
+
+                <div className="absolute inset-0 flex flex-col justify-between p-2.5 pointer-events-none z-10">
+                  <div className="flex justify-between items-start font-mono text-[8px] text-pureWhite uppercase tracking-wider">
+                    <span className="bg-almostBlack/70 backdrop-blur-xs px-1.5 py-0.5 border border-pureWhite/10">
+                      {card.location}
+                    </span>
+                    <span className="text-burntOrange font-bold bg-almostBlack/70 backdrop-blur-xs px-1.5 py-0.5 border border-burntOrange/40">
+                      LIVE WIRE
+                    </span>
                   </div>
 
-                  <div className="font-mono text-[9px] text-pureWhite/90 flex items-center justify-between">
-                    <span className="truncate max-w-[140px]">{card.imageAlt}</span>
+                  <div className="font-mono text-[9px] text-pureWhite flex items-center justify-between">
+                    <span className="truncate max-w-[150px] text-pureWhite/90">{card.imageAlt}</span>
                     <span className="text-[10px] text-burntOrange font-bold">↗</span>
                   </div>
                 </div>

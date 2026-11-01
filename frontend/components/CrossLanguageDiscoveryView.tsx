@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ArticleCandidate, ProviderStatusReport, LanguageQuery, CandidateOutcome, RetrievalStatus } from '../types';
 import { stripHtmlAndEntities } from '../lib/utils';
 import { Button } from './ui/Button';
+import LanguageDistributionChart from './charts/LanguageDistributionChart';
 import {
   Globe2,
   Search,
@@ -211,7 +212,14 @@ export default function CrossLanguageDiscoveryView({
         )}
       </div>
 
-      {/* 2. Article Selection & Comparison Action Bar */}
+      {/* 2. Visual Multilingual Coverage Distribution Chart */}
+      {candidates.length > 0 && (
+        <div className="bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm">
+          <LanguageDistributionChart candidates={candidates} />
+        </div>
+      )}
+
+      {/* 3. Article Selection & Comparison Action Bar */}
       {candidates.length > 0 && (
         <div className="bg-pureWhite border border-lightGrey p-4 flex flex-wrap items-center justify-between gap-4 sticky top-20 z-40 shadow-editorial-sm">
           <div className="flex items-center gap-4">

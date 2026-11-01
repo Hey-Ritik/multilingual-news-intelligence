@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Globe,
   LayoutDashboard,
@@ -35,16 +36,81 @@ export default function PlatformPreviewSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Platform mockup elevation and scale-up on scroll
-      gsap.from(mockupRef.current, {
-        y: 60,
+      // Header and Section 06 reveal
+      gsap.from('.platform-header-anim', {
+        y: 25,
         opacity: 0,
-        scale: 0.96,
+        stagger: 0.1,
+        duration: 0.85,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Orange hairline accent expansion
+      gsap.from('.platform-accent-line', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Peeking Alpine Landscape Editorial Photo Tile gentle reveal
+      gsap.from('.platform-peeking-img', {
+        x: 40,
+        opacity: 0,
         duration: 1.1,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: mockupRef.current,
           start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Subtle parallax on the peeking photo tile during scroll
+      gsap.to('.platform-peeking-img', {
+        y: -30,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      });
+
+      // Platform mockup elevation and scale-up on scroll
+      gsap.from(mockupRef.current, {
+        y: 45,
+        opacity: 0,
+        scale: 0.97,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: mockupRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Staggered reveal for internal mockup cards
+      gsap.from('.mockup-dim-card', {
+        y: 15,
+        opacity: 0,
+        stagger: 0.08,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: mockupRef.current,
+          start: 'top 75%',
           toggleActions: 'play none none reverse',
         },
       });
@@ -68,25 +134,25 @@ export default function PlatformPreviewSection() {
         {/* Section Header Row */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-14">
           {/* Left Number Rail */}
-          <div className="hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
+          <div className="platform-header-anim hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
             <span className="font-mono text-sm font-bold text-burntOrange">06</span>
-            <span className="w-6 h-px bg-editorialDark-border" />
+            <span className="platform-accent-line w-6 h-px bg-editorialDark-border origin-left" />
           </div>
 
           {/* Left Column: Headline and Call-to-Action */}
           <div className="lg:col-span-8 flex flex-col gap-4">
-            <span className="editorial-eyebrow text-burntOrange">THE PLATFORM</span>
+            <span className="platform-header-anim editorial-eyebrow text-burntOrange">THE PLATFORM</span>
 
-            <h2 className="font-editorial font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-editorial-tighter leading-tight text-pureWhite">
+            <h2 className="platform-header-anim font-editorial font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-editorial-tighter leading-tight text-pureWhite">
               From global news to meaningful insights.
             </h2>
 
-            <p className="text-sm sm:text-base text-editorialDark-muted max-w-xl font-normal leading-relaxed">
+            <p className="platform-header-anim text-sm sm:text-base text-editorialDark-muted max-w-xl font-normal leading-relaxed">
               A powerful platform to explore, analyse and compare news across languages using
               advanced NLP. Deterministic semantic extraction without fabricated summaries.
             </p>
 
-            <div className="pt-2 flex items-center gap-4">
+            <div className="platform-header-anim pt-2 flex items-center gap-4">
               <Button
                 href="/workspace"
                 variant="primary"
@@ -104,7 +170,7 @@ export default function PlatformPreviewSection() {
           </div>
 
           {/* Right Rail Annotation */}
-          <div className="hidden lg:flex lg:col-span-3 flex-col justify-start items-end pt-1">
+          <div className="platform-header-anim hidden lg:flex lg:col-span-3 flex-col justify-start items-end pt-1">
             <div className="space-y-1 font-mono text-[9px] text-right text-editorialDark-muted tracking-widest uppercase leading-snug">
               <div>INTELLIGENCE</div>
               <div>BEYOND</div>
@@ -113,11 +179,32 @@ export default function PlatformPreviewSection() {
           </div>
         </div>
 
-        {/* Realistic Application Interface Mockup (Honest Empty State) */}
-        <div
-          ref={mockupRef}
-          className="w-full bg-editorialDark-surface border border-editorialDark-border shadow-2xl overflow-hidden rounded-xs"
-        >
+        {/* Layered Editorial Composition: Dashboard Mockup + Peeking Photographic Landscape Tile */}
+        <div className="relative w-full">
+          {/* Peeking Alpine Landscape Editorial Photo Tile (Behind/Right) */}
+          <div className="platform-peeking-img absolute -top-8 -right-4 lg:-right-8 w-64 lg:w-80 h-72 lg:h-96 border border-editorialDark-border shadow-2xl overflow-hidden z-0 hidden sm:block pointer-events-none">
+            <Image
+              src="/images/platform-landscape.jpg"
+              alt="Dramatic alpine mountain ridge with warm dusk lighting"
+              fill
+              sizes="(max-width: 1024px) 256px, 320px"
+              className="object-cover grayscale contrast-125 brightness-90"
+            />
+            {/* Warm dusk horizon glow gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-burntOrange/30 via-transparent to-almostBlack/60 mix-blend-screen" />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-almostBlack/40 to-almostBlack" />
+
+            {/* Minimalist Swiss Coordinates & Label */}
+            <div className="absolute top-4 right-4 bg-almostBlack/85 px-2 py-0.5 border border-pureWhite/20 backdrop-blur-xs font-mono text-[8px] text-pureWhite uppercase tracking-widest">
+              ALPS 46.5° N
+            </div>
+          </div>
+
+          {/* Realistic Application Interface Mockup (Honest Empty State) */}
+          <div
+            ref={mockupRef}
+            className="relative z-10 w-full bg-editorialDark-surface border border-editorialDark-border shadow-2xl overflow-hidden rounded-xs"
+          >
           {/* Window Chrome Title Bar */}
           <div className="px-4 py-3 bg-almostBlack border-b border-editorialDark-border flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -224,7 +311,7 @@ export default function PlatformPreviewSection() {
 
               {/* 4 Empty State Dimension Cards Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 pt-6 border-t border-lightGrey">
-                <div className="p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
+                <div className="mockup-dim-card p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
                   <div className="font-mono text-[10px] font-bold text-almostBlack uppercase">
                     Sentiment
                   </div>
@@ -234,7 +321,7 @@ export default function PlatformPreviewSection() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
+                <div className="mockup-dim-card p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
                   <div className="font-mono text-[10px] font-bold text-almostBlack uppercase">
                     Emotion
                   </div>
@@ -244,7 +331,7 @@ export default function PlatformPreviewSection() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
+                <div className="mockup-dim-card p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
                   <div className="font-mono text-[10px] font-bold text-almostBlack uppercase">
                     Bias &amp; Agency
                   </div>
@@ -254,7 +341,7 @@ export default function PlatformPreviewSection() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
+                <div className="mockup-dim-card p-3 bg-pureWhite border border-lightGrey text-center space-y-1">
                   <div className="font-mono text-[10px] font-bold text-almostBlack uppercase">
                     Toxicity
                   </div>
@@ -266,6 +353,7 @@ export default function PlatformPreviewSection() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>

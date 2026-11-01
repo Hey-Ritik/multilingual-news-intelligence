@@ -16,12 +16,39 @@ export default function CapabilitiesSection() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      // Header and Section 03 Number reveal
+      gsap.from('.cap-header-anim', {
+        y: 25,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      // Hairline accent line expansion
+      gsap.from('.cap-accent-line', {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
       // Reveal columns on scroll
       gsap.from('.capability-col', {
-        y: 40,
+        y: 35,
         opacity: 0,
-        stagger: 0.12,
-        duration: 0.9,
+        stagger: 0.1,
+        duration: 0.85,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: gridRef.current,
@@ -30,16 +57,17 @@ export default function CapabilitiesSection() {
         },
       });
 
-      // Divider line animation
-      gsap.from('.capability-divider', {
-        scaleY: 0,
-        transformOrigin: 'top center',
-        duration: 1,
+      // Category badge subtle reveal
+      gsap.from('.cap-badge-anim', {
+        opacity: 0,
+        x: -10,
         stagger: 0.1,
+        duration: 0.6,
         ease: 'power2.out',
         scrollTrigger: {
           trigger: gridRef.current,
-          start: 'top 85%',
+          start: 'top 78%',
+          toggleActions: 'play none none reverse',
         },
       });
     }, sectionRef);
@@ -83,21 +111,21 @@ export default function CapabilitiesSection() {
         {/* Header with Swiss Left Rail */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
           {/* Left Number */}
-          <div className="hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
+          <div className="cap-header-anim hidden lg:flex lg:col-span-1 flex-col items-start gap-2 pt-1">
             <span className="font-mono text-sm font-bold text-almostBlack">03</span>
-            <span className="w-6 h-px bg-lightGrey" />
+            <span className="cap-accent-line w-6 h-px bg-lightGrey origin-left" />
           </div>
 
           {/* Eyebrow and Headline */}
           <div className="lg:col-span-10 flex flex-col gap-2">
-            <span className="editorial-eyebrow text-burntOrange">OUR CAPABILITIES</span>
-            <h2 className="font-editorial font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-almostBlack">
+            <span className="cap-header-anim editorial-eyebrow text-burntOrange">OUR CAPABILITIES</span>
+            <h2 className="cap-header-anim font-editorial font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-almostBlack">
               Precision NLP Architecture Built For Multi-Perspective News Analysis
             </h2>
           </div>
 
           {/* Right Rail Annotation */}
-          <div className="hidden lg:flex lg:col-span-1 flex-col items-end pt-1">
+          <div className="cap-header-anim hidden lg:flex lg:col-span-1 flex-col items-end pt-1">
             <div className="space-y-1 font-mono text-[9px] text-right text-editorialMuted tracking-widest uppercase leading-snug">
               <div>PEOPLE</div>
               <div>CULTURE</div>
@@ -131,7 +159,7 @@ export default function CapabilitiesSection() {
                   {item.icon}
                 </div>
 
-                <div className="font-mono text-[10px] font-semibold text-burntOrange uppercase tracking-wider mb-2">
+                <div className="cap-badge-anim font-mono text-[10px] font-semibold text-burntOrange uppercase tracking-wider mb-2">
                   {item.badge}
                 </div>
 

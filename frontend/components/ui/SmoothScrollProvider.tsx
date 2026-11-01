@@ -29,6 +29,30 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     // Synchronize Lenis with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
+    // Expose lenis instance globally for programmatic smooth scrolling
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
+    // Handle smooth scrolling for all in-page anchor links
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (!target) return;
+      const href = target.getAttribute('href');
+      if (href && href.startsWith('#') && href.length > 1) {
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+          e.preventDefault();
+          lenis.scrollTo(targetElement as HTMLElement, {
+            offset: -80,
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          });
+          window.history.pushState(null, '', href);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+
     const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
     };
@@ -37,6 +61,8 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      document.removeEventListener('click', handleAnchorClick);
+      delete (window as unknown as { __lenis?: Lenis }).__lenis;
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
     };

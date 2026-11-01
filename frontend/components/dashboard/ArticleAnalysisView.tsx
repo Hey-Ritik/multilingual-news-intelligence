@@ -13,6 +13,7 @@ import {
 } from '../../types';
 import { FileText, Tag, Quote, Globe, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
+import EntityAnalysisChart from '../charts/EntityAnalysisChart';
 
 interface ArticleAnalysisViewProps {
   article: IngestedArticle | null;
@@ -77,42 +78,36 @@ export default function ArticleAnalysisView({
 
           {/* Named Entities & Claim Attribution Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left: Named Entities */}
+            {/* Left: Named Entities Frequency & Extracted Spans */}
             <div className="lg:col-span-6 bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-lightGrey">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-burntOrange" />
-                  <span className="editorial-eyebrow text-burntOrange">NAMED ENTITIES</span>
-                </div>
-                <span className="font-mono text-[10px] text-almostBlack font-bold">
-                  {entities.length} EXTRACTED
-                </span>
-              </div>
+              <EntityAnalysisChart entities={entities} />
 
-              {entities.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {entities.map((entity, i) => (
-                    <div
-                      key={i}
-                      className="px-2.5 py-1 bg-warmOffWhite border border-lightGrey text-xs flex items-center gap-2"
-                    >
-                      <span className="font-editorial font-bold text-almostBlack">
-                        {entity.text}
-                      </span>
-                      <span className="font-mono text-[9px] px-1 bg-pureWhite border border-lightGrey text-editorialMuted uppercase">
-                        {entity.label}
-                      </span>
-                      {entity.confidence > 0 && (
-                        <span className="font-mono text-[9px] text-burntOrange font-bold">
-                          {Math.round(entity.confidence * 100)}%
+              {entities.length > 0 && (
+                <div className="pt-3 border-t border-lightGrey space-y-2">
+                  <div className="flex items-center justify-between font-mono text-[10px] text-editorialMuted uppercase font-bold">
+                    <span>Extracted Entity Tokens ({entities.length}):</span>
+                    <span>Confidence Score</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
+                    {entities.map((entity, i) => (
+                      <div
+                        key={i}
+                        className="px-2 py-1 bg-warmOffWhite border border-lightGrey text-xs flex items-center gap-1.5"
+                      >
+                        <span className="font-editorial font-bold text-almostBlack text-[11px]">
+                          {entity.text}
                         </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="py-6 text-center text-xs text-editorialMuted font-mono">
-                  No named entities extracted from this passage.
+                        <span className="font-mono text-[9px] px-1 bg-pureWhite border border-lightGrey text-editorialMuted uppercase">
+                          {entity.label}
+                        </span>
+                        {entity.confidence > 0 && (
+                          <span className="font-mono text-[9px] text-burntOrange font-bold">
+                            {Math.round(entity.confidence * 100)}%
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

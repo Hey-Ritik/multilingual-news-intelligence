@@ -4,6 +4,7 @@ import React from 'react';
 import { Smile, Activity, Quote, AlertCircle, ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { SentimentResult, EmotionResult, IngestedArticle } from '../../types';
+import EmotionAnalysisChart from '../charts/EmotionAnalysisChart';
 
 interface SentimentEmotionViewProps {
   article: IngestedArticle | null;
@@ -44,23 +45,6 @@ export default function SentimentEmotionView({
     );
   }
 
-  const getEmotionScore = (label: string): number => {
-    const match = emotion.detected_emotions.find(
-      (e) => e.emotion.toLowerCase() === label.toLowerCase()
-    );
-    return match ? match.score : 0;
-  };
-
-  const emotionList = [
-    { name: 'Joy', key: 'joy', score: getEmotionScore('JOY'), color: 'bg-emerald-500' },
-    { name: 'Sadness', key: 'sadness', score: getEmotionScore('SADNESS'), color: 'bg-sky-500' },
-    { name: 'Anger', key: 'anger', score: getEmotionScore('ANGER'), color: 'bg-rose-500' },
-    { name: 'Fear', key: 'fear', score: getEmotionScore('FEAR'), color: 'bg-amber-500' },
-    { name: 'Surprise', key: 'surprise', score: getEmotionScore('SURPRISE'), color: 'bg-purple-500' },
-    { name: 'Disgust', key: 'disgust', score: getEmotionScore('DISGUST'), color: 'bg-orange-500' },
-    { name: 'Neutral', key: 'neutral', score: getEmotionScore('NEUTRAL'), color: 'bg-stone-500' },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Header Banner */}
@@ -91,10 +75,10 @@ export default function SentimentEmotionView({
         </div>
       </div>
 
-      {/* Two Column Grid: Sentiment Card + Emotion Card */}
+      {/* Two Column Grid: Sentiment Card + Redesigned Emotion Chart Card */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Left: Sentiment Polarity & Signal Words */}
-        <div className="lg:col-span-6 bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-5 bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm flex flex-col justify-between space-y-6">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-lightGrey">
               <span className="editorial-eyebrow text-burntOrange">POLARITY &amp; VALENCE</span>
@@ -140,12 +124,12 @@ export default function SentimentEmotionView({
                 <span className="font-mono text-[10px] font-bold text-almostBlack uppercase">
                   Supporting Clauses &amp; Evidence ({sentiment.supporting_clauses.length}):
                 </span>
-                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                   {sentiment.supporting_clauses && sentiment.supporting_clauses.length > 0 ? (
                     sentiment.supporting_clauses.map((clause, idx) => (
                       <div
                         key={idx}
-                        className="p-2 bg-warmOffWhite border border-lightGrey font-mono text-xs text-almostBlack flex justify-between items-center gap-2"
+                        className="p-2.5 bg-warmOffWhite border border-lightGrey font-mono text-xs text-almostBlack flex justify-between items-center gap-2"
                       >
                         <span className="italic truncate">&quot;{clause.passage}&quot;</span>
                         <span className="font-bold text-[10px] text-burntOrange uppercase shrink-0">
@@ -169,41 +153,9 @@ export default function SentimentEmotionView({
           </div>
         </div>
 
-        {/* Right: Fine-Grained Emotion Scores */}
-        <div className="lg:col-span-6 bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm flex flex-col justify-between space-y-6">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-lightGrey">
-              <span className="editorial-eyebrow text-burntOrange">EMOTION VECTOR</span>
-              <span className="font-mono text-[10px] text-almostBlack font-bold">
-                PRIMARY: {emotion.primary_emotion}
-              </span>
-            </div>
-
-            <div className="pt-4 space-y-3">
-              {emotionList.map((emo) => {
-                const percent = Math.min(100, Math.round(emo.score * 100));
-                return (
-                  <div key={emo.key} className="space-y-1">
-                    <div className="flex justify-between font-mono text-xs">
-                      <span className="font-semibold text-almostBlack uppercase">{emo.name}</span>
-                      <span className="text-editorialMuted">{percent}%</span>
-                    </div>
-                    <div className="w-full bg-warmOffWhite h-2 border border-lightGrey overflow-hidden">
-                      <div
-                        className={`h-full ${emo.color} transition-all duration-300`}
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-lightGrey/60 text-[11px] text-editorialMuted leading-relaxed">
-            <strong>Primary Classification:</strong> {emotion.primary_emotion} with{' '}
-            {emotion.detected_emotions.length} expressive passages identified in text.
-          </div>
+        {/* Right: Fine-Grained Emotion Scores (Redesigned with EmotionAnalysisChart) */}
+        <div className="lg:col-span-7 bg-pureWhite border border-lightGrey p-6 shadow-editorial-sm flex flex-col justify-between space-y-4">
+          <EmotionAnalysisChart emotion={emotion} />
         </div>
       </div>
 
