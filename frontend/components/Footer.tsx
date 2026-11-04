@@ -68,7 +68,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Language Coverage & Academic Attribution */}
+          {/* Language Coverage */}
           <div className="md:col-span-4 space-y-3">
             <div className="editorial-eyebrow text-burntOrange">
               Multilingual Pipeline
@@ -80,11 +80,6 @@ export default function Footer() {
               </div>
               <div className="font-mono text-xs font-semibold text-almostBlack tracking-wider">
                 English • हिन्दी • ಕನ್ನಡ • తెలుగు • தமிழ்
-              </div>
-              <div className="pt-2 border-t border-lightGrey/60 text-[11px] text-editorialMuted">
-                Developed by <span className="font-semibold text-almostBlack">Ritik Singh</span>
-                <br />
-                RV University, Bengaluru
               </div>
             </div>
           </div>

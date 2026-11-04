@@ -229,13 +229,11 @@ export default function SettingsView({
         </div>
       </div>
 
-      {/* Academic Citation & Attribution */}
+      {/* System Purpose & Methodological Stance */}
       <div className="p-6 bg-pureWhite border border-lightGrey shadow-editorial-sm space-y-3">
-        <div className="editorial-eyebrow text-burntOrange">ACADEMIC &amp; INSTITUTIONAL ATTRIBUTION</div>
+        <div className="editorial-eyebrow text-burntOrange">SYSTEM METHODOLOGY &amp; ARCHITECTURE</div>
         <p className="text-xs text-editorialMuted leading-relaxed">
-          <strong>Multilingual News Intelligence System</strong> was developed by{' '}
-          <strong className="text-almostBlack">Ritik Singh</strong> at{' '}
-          <strong className="text-almostBlack">RV University, Bengaluru</strong>. Designed for deterministic,
+          <strong>Multilingual News Intelligence System</strong> is designed for deterministic,
           explainable cross-language event framing verification.
         </p>
       </div>
